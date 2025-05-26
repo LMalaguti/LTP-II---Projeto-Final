@@ -147,5 +147,5 @@ class AppMenu:
 
     def iniciar_jogo(self):
         self.mostrar_tela(self.frame_jogo)
-        jogo = Jogo(self.frame_jogo)
+        jogo = Jogo(self.frame_jogo, volta_menu=lambda: self.mostrar_tela(self.frame_menu))
         jogo.interface()

@@ -3,7 +3,7 @@ from tkinter import messagebox
 
 
 class Usuario:
-    def __init__(self, db_user='root', db_host='localhost', db_password='123456', db_nome=''):
+    def __init__(self, db_user='root', db_host='localhost', db_password='ceub123456', db_nome=''):
         self.user = db_user
         self.host = db_host
         self.senha = db_password
@@ -27,7 +27,7 @@ class Usuario:
         self.cursor.execute("""
             CREATE TABLE IF NOT EXISTS usuarios (
                 idt INT AUTO_INCREMENT PRIMARY KEY,
-                nome VARCHAR(50)
+                nome VARCHAR(50) UNIQUE NOT NULL
             )
         """)
 
@@ -52,4 +52,3 @@ class Usuario:
     def update_usuario_BD(self, nome_update, id_update):
         sql_update = "UPDATE usuarios SET nome = %s WHERE idt = %s"
         self.cursor.execute(sql_update, (nome_update, id_update))
-

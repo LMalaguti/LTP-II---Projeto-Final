@@ -3,17 +3,18 @@ from itertools import permutations
 from collections import defaultdict
 from spellchecker import SpellChecker
 import threading
-from playsound import playsound
+#from playsound import playsound
 
 # Verificador de palavras em português
 spell = SpellChecker(language='pt')
 
-
+#Classe Jogo com callback para poder retornar ao menu
 class Jogo:
-    def __init__(self, root):
+    def __init__(self, root, volta_menu=None):
         self.root = root
+        self.volta_menu = volta_menu
 
-    # Sons
+    #Sons
     def tocar_som_click(self):
         threading.Thread(target=lambda: playsound("click.wav"), daemon=True).start()
     def tocar_som_sucesso(self):
@@ -80,7 +81,7 @@ class Jogo:
             self.resultado_text.insert(tk.END, line + "\n")
         self.atualizar_pontuacao()
 
-#Revela Palavra ao acertar
+    #Revela Palavra ao acertar
     def revelar_palavra(self, palavra):
         global output_lines, word_positions
         if palavra in word_positions:
@@ -164,6 +165,7 @@ class Jogo:
         self.mostrar_grade()
         self.resultado_text.insert(tk.END, "\n👀 Todas as palavras foram reveladas!\n")
 
+
     # Interface
     def interface(self):
         self.canvas_letras = tk.Canvas(self.root, width=1000, height=100, bg="#f7f7f7", highlightthickness=0)
@@ -186,6 +188,12 @@ class Jogo:
         self.btn_mostrar = tk.Button(self.frame_botoes, text="❓ Mostrar Todas", font=("Arial", 14), command=self.mostrar_todas)
         self.btn_mostrar.grid(row=0, column=1, padx=10)
 
+        self.btn_voltar = tk.Button(self.frame_botoes, text="↩️ Voltar ao Menu", font=("Arial", 14), command=self.volta_menu)
+        self.btn_voltar.grid(row=0, column=2, padx=10)
+
+
+
+
     # Adiciona rolagem ao Text
         self.scrollbar = tk.Scrollbar(self.root)
         self.scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
@@ -194,4 +202,3 @@ class Jogo:
         self.resultado_text.pack(pady=10, padx=10)
 
         self.scrollbar.config(command=self.resultado_text.yview)
-
