@@ -3,7 +3,7 @@ from tkinter import messagebox
 
 
 class Usuario:
-    def __init__(self, db_user='root', db_host='localhost', db_password='ceub123456', db_nome=''):
+    def __init__(self, db_user='root', db_host='127.0.0.1', db_password='example_root_password', db_nome=''):
         self.user = db_user
         self.host = db_host
         self.senha = db_password
@@ -12,7 +12,7 @@ class Usuario:
         self.cursor = None
 
     def create_connection(self):
-        self.conexao = mysql.connector.connect(user=self.user, host=self.host, password=self.senha)
+        self.conexao = mysql.connector.connect(user=self.user, host=self.host, password=self.senha, database="db_anagrama")
         return self.conexao
 
     def create_cursor(self):
@@ -57,7 +57,7 @@ class Usuario:
         self.cursor.execute("""
             CREATE TABLE IF NOT EXISTS pontuacao (
                 idt_usuario INT,
-                idt_pontos INT AUTO_INCREMENT,
+                idt_pontos INT AUTO_INCREMENT PRIMARY KEY,
                 pontuacao INT DEFAULT 0,
                 FOREIGN KEY (idt_usuario) REFERENCES usuarios (idt_usuario)
                 )
@@ -75,4 +75,5 @@ class Usuario:
             GROUP BY u.idt_usuario, u.nome
             ORDER BY soma_pontuacoes DESC
         """)
-        return self.cursor.fetchall()
+        result = self.cursor.fetchall()
+        return result

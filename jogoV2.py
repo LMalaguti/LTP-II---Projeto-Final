@@ -4,22 +4,16 @@ from itertools import permutations
 from collections import defaultdict
 from spellchecker import SpellChecker
 import threading
-#from playsound import playsound
 
 # Verificador de palavras em português
 spell = SpellChecker(language='pt')
 
-#Classe Jogo com callback para poder retornar ao menu
+# Classe Jogo com callback para poder retornar ao menu
 class Jogo:
     def __init__(self, root, volta_menu=None):
+        self.usuario = Usuario()
         self.root = root
         self.volta_menu = volta_menu
-
-    #Sons
-    # def tocar_som_click(self):
-    #     threading.Thread(target=lambda: playsound("click.wav"), daemon=True).start()
-    # def tocar_som_sucesso(self):
-    #     threading.Thread(target=lambda: playsound("success.wav"), daemon=True).start()
 
     # Variáveis globais
     palavras_validas = set()
@@ -41,16 +35,18 @@ class Jogo:
         global usuario_atual
         entrada = self.campo_login.get().strip()
         if entrada.isdigit():
-            usuario_atual = int(entrada)
+            usuario_atual = entrada
             tk.messagebox.showinfo("Login", f"Usuário {usuario_atual} logado com sucesso!")
             self.campo_login.delete(0, tk.END)
         else:
             tk.messagebox.showwarning("Aviso", "Digite o ID correto do usuário")
 
     # Envia Pontuação para o bando de dados
-    def commit_puntuacao(self):
+    def commit_pontuacao(self):
         global pontuacao, usuario_atual
-        self.usuario.insert_pontuacao = (pontuacao, usuario_atual)
+        self.usuario.create_connection()
+        self.usuario.create_cursor()
+        self.usuario.insert_pontuacao(pontuacao, usuario_atual)
 
     # Desenhar peças
     def desenhar_pecas(self, canvas, texto):
@@ -63,7 +59,6 @@ class Jogo:
     # Atualizar peças ao digitar
     def ao_digitar(self, event=None):
         self.desenhar_pecas(self.canvas_letras, self.campo_texto.get())
-        self.tocar_som_click()
 
     # Gera as linhas da grade de palavras ocultas e preenche word_positions.
     def construir_grade(self):
@@ -130,11 +125,10 @@ class Jogo:
             pontuacao += pontuacao_adicionada
             self.mostrar_grade_atualizada()
             self.campo_texto.delete(0, tk.END)
-            self.tocar_som_sucesso()
             self.resultado_text.insert(tk.END, f"\n✔ +{pontuacao_adicionada} pontos!\n")
-            if palavras_descobertas == palavras_validas:
+            if set(palavras_descobertas) == set(palavras_validas):
                 self.resultado_text.insert(tk.END, "\n🎉 Parabéns! Você encontrou todas as palavras!\n")
-                self.commit_puntuacao()
+                self.commit_pontuacao()
         else:
             self.campo_texto.delete(0, tk.END)
             self.resultado_text.insert(tk.END, "\n❌ Palavra inválida! (-1 ponto)\n")

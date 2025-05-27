@@ -12,6 +12,7 @@ class AppMenu:
         self.usuario.create_cursor()
         self.usuario.create_database()
         self.usuario.create_table_usuario()
+        self.usuario.create_table_pontuacao()
 
         self.root = root
         self.root.title("Sistema de Usuários")
@@ -32,12 +33,11 @@ class AppMenu:
         self.criar_tela_update()
 
         self.criar_tela_ranking()
-
         self.mostrar_tela(self.frame_menu)
 
     def mostrar_tela(self, frame):
         # Esconde todos os frames
-        for f in [self.frame_menu, self.frame_menu_usuario, self.frame_jogo, self.frame_criar, self.frame_deletar, self.frame_mostrar_usuarios, self.frame_update]:
+        for f in [self.frame_menu, self.frame_menu_usuario, self.frame_jogo, self.frame_criar, self.frame_deletar, self.frame_mostrar_usuarios, self.frame_update, self.frame_ranking]:
             f.pack_forget()
         # Mostra o frame desejado
         frame.pack(pady=10)
@@ -47,8 +47,8 @@ class AppMenu:
         tk.Label(self.frame_menu, text="Menu Principal", font=('Arial', 14)).pack(pady=10)
         tk.Button(self.frame_menu, text="Jogar", width=20, command=self.iniciar_jogo).pack(pady=5)
         tk.Button(self.frame_menu, text="Opções Usuários", width=20, command=lambda: self.mostrar_tela(self.frame_menu_usuario)).pack(pady=5)
-        tk.Button(self.frame_menu, text="Sair", width=20, command=self.root.quit).pack(pady=5)
         tk.Button(self.frame_menu, text="Ranking", width=20, command=self.mostrar_tela_ranking).pack(pady=5)
+        tk.Button(self.frame_menu, text="Sair", width=20, command=self.root.quit).pack(pady=5)
 
     def criar_tela_menu_usuario(self):
         tk.Label(self.frame_menu_usuario, text="Opções Usuário", font=('Arial', 14)).pack(pady=10)
