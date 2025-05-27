@@ -11,7 +11,7 @@ class AppMenu:
         self.usuario.create_connection()
         self.usuario.create_cursor()
         self.usuario.create_database()
-        self.usuario.create_table()
+        self.usuario.create_table_usuario()
 
         self.root = root
         self.root.title("Sistema de Usuários")
@@ -31,6 +31,8 @@ class AppMenu:
         self.criar_tela_mostrar_usuario()
         self.criar_tela_update()
 
+        self.criar_tela_ranking()
+
         self.mostrar_tela(self.frame_menu)
 
     def mostrar_tela(self, frame):
@@ -46,6 +48,7 @@ class AppMenu:
         tk.Button(self.frame_menu, text="Jogar", width=20, command=self.iniciar_jogo).pack(pady=5)
         tk.Button(self.frame_menu, text="Opções Usuários", width=20, command=lambda: self.mostrar_tela(self.frame_menu_usuario)).pack(pady=5)
         tk.Button(self.frame_menu, text="Sair", width=20, command=self.root.quit).pack(pady=5)
+        tk.Button(self.frame_menu, text="Ranking", width=20, command=self.mostrar_tela_ranking).pack(pady=5)
 
     def criar_tela_menu_usuario(self):
         tk.Label(self.frame_menu_usuario, text="Opções Usuário", font=('Arial', 14)).pack(pady=10)
@@ -144,6 +147,34 @@ class AppMenu:
                 self.entry_id_update.delete(9, tk.END)
             except ValueError:
                 messagebox.showerror("Erro", "O ID deve ser um número.")
+
+
+    def criar_tela_ranking(self):
+        self.frame_ranking = tk.Frame(self.root)
+        tk.Label(self.frame_ranking, text='Ranking de Usuários', font=('Arial', 14)).pack(pady=10)
+
+        self.text_area_ranking = tk.Text(self.frame_ranking, height=12, width=45, state='disabled')
+        self.text_area_ranking.pack(pady=5)
+
+        tk.Button(self.frame_ranking, text="Atualizar Ranking", command=self.atualizar_ranking).pack(pady=5)
+        tk.Button(self.frame_ranking, text="Voltar ao Menu Principal", command=lambda: self.mostrar_tela(self.frame_menu)).pack(pady=5)
+
+    def mostrar_tela_ranking(self):
+        self.atualizar_ranking()
+        self.mostrar_tela(self.frame_ranking)
+
+    def atualizar_ranking(self):
+        ranking = self.usuario.ranking()
+        self.text_area_ranking.config(state='normal')
+        self.text_area_ranking.delete('1.0', tk.END)
+        if ranking:
+            self.text_area_ranking.insert(tk.END, f"{'Pos':<5}{'Nome':<20}{'Pontuação':>10}\n")
+            self.text_area_ranking.insert(tk.END, "-"*40 + "\n")
+            for idx, (nome, pontuacao) in enumerate(ranking, 1):
+                self.text_area_ranking.insert(tk.END, f"{idx:<5}{nome:<20}{pontuacao:>10}\n")
+        else:
+            self.text_area_ranking.insert(tk.END, "Nenhum dado de ranking disponível.\n")
+        self.text_area_ranking.config(state='disabled')
 
     def iniciar_jogo(self):
         self.mostrar_tela(self.frame_jogo)

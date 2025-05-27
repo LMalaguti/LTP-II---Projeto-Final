@@ -1,3 +1,4 @@
+from Usuario import *
 import tkinter as tk
 from itertools import permutations
 from collections import defaultdict
@@ -15,10 +16,10 @@ class Jogo:
         self.volta_menu = volta_menu
 
     #Sons
-    def tocar_som_click(self):
-        threading.Thread(target=lambda: playsound("click.wav"), daemon=True).start()
-    def tocar_som_sucesso(self):
-        threading.Thread(target=lambda: playsound("success.wav"), daemon=True).start()
+    # def tocar_som_click(self):
+    #     threading.Thread(target=lambda: playsound("click.wav"), daemon=True).start()
+    # def tocar_som_sucesso(self):
+    #     threading.Thread(target=lambda: playsound("success.wav"), daemon=True).start()
 
     # Variáveis globais
     palavras_validas = set()
@@ -27,12 +28,29 @@ class Jogo:
     output_lines = []
     word_positions = {}
     pontuacao = 0
+    usuario_atual = 0
 
     # Tabela de pontuação por tamanho de palavra
     tabela_pontos = {4: 1, 5: 2, 6: 3, 7: 5}
     # Palavras maiores que 7 letras ganham 8 pontos
     def pontos_palavra(self, palavra):
         return self.tabela_pontos.get(len(palavra), 8 if len(palavra) > 7 else 0)
+
+    # Função de login
+    def login(self):
+        global usuario_atual
+        entrada = self.campo_login.get().strip()
+        if entrada.isdigit():
+            usuario_atual = int(entrada)
+            tk.messagebox.showinfo("Login", f"Usuário {usuario_atual} logado com sucesso!")
+            self.campo_login.delete(0, tk.END)
+        else:
+            tk.messagebox.showwarning("Aviso", "Digite o ID correto do usuário")
+
+    # Envia Pontuação para o bando de dados
+    def commit_puntuacao(self):
+        global pontuacao, usuario_atual
+        self.usuario.insert_pontuacao = (pontuacao, usuario_atual)
 
     # Desenhar peças
     def desenhar_pecas(self, canvas, texto):
@@ -116,6 +134,7 @@ class Jogo:
             self.resultado_text.insert(tk.END, f"\n✔ +{pontuacao_adicionada} pontos!\n")
             if palavras_descobertas == palavras_validas:
                 self.resultado_text.insert(tk.END, "\n🎉 Parabéns! Você encontrou todas as palavras!\n")
+                self.commit_puntuacao()
         else:
             self.campo_texto.delete(0, tk.END)
             self.resultado_text.insert(tk.END, "\n❌ Palavra inválida! (-1 ponto)\n")
@@ -168,6 +187,17 @@ class Jogo:
 
     # Interface
     def interface(self):
+        # Frame para login
+        login_frame = tk.Frame(self.root, bg="#f7f7f7")
+        login_frame.pack(pady=5)
+
+        tk.Label(login_frame, text="ID do Usuário:", font=("Arial", 14), bg="#f7f7f7").pack(side=tk.LEFT)
+        self.campo_login = tk.Entry(login_frame, font=("Arial", 14), width=10)
+        self.campo_login.pack(side=tk.LEFT, padx=5)
+
+        self.btn_login = tk.Button(login_frame, text="🔑 Login", font=("Arial", 12), command=self.login)
+        self.btn_login.pack(side=tk.LEFT, padx=5)
+
         self.canvas_letras = tk.Canvas(self.root, width=1000, height=100, bg="#f7f7f7", highlightthickness=0)
         self.canvas_letras.pack(pady=10)
 
@@ -191,10 +221,7 @@ class Jogo:
         self.btn_voltar = tk.Button(self.frame_botoes, text="↩️ Voltar ao Menu", font=("Arial", 14), command=self.volta_menu)
         self.btn_voltar.grid(row=0, column=2, padx=10)
 
-
-
-
-    # Adiciona rolagem ao Text
+        # Adiciona rolagem ao Text
         self.scrollbar = tk.Scrollbar(self.root)
         self.scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
