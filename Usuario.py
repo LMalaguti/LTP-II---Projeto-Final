@@ -11,6 +11,9 @@ class Usuario:
         self.conexao = None
         self.cursor = None
 
+    def commit(self):
+        pass
+
     def create_connection(self):
         self.conexao = mysql.connector.connect(user=self.user, host=self.host, password=self.senha, database="db_anagrama")
         return self.conexao
@@ -40,7 +43,7 @@ class Usuario:
 
     def delete_usuario(self, idt):
         try:
-            self.cursor.execute("DELETE FROM usuarios WHERE idt = %s", (idt,))
+            self.cursor.execute("DELETE FROM usuarios WHERE idt_usuario = %s", (idt,))
             self.conexao.commit()
         except mysql.connector.Error as erro:
             messagebox.showerror("Erro", f"Erro ao deletar usuário: {erro}")
@@ -50,7 +53,7 @@ class Usuario:
         return self.cursor.fetchall()
 
     def update_usuario_BD(self, nome_update, id_update):
-        sql_update = "UPDATE usuarios SET nome = %s WHERE idt = %s"
+        sql_update = "UPDATE usuarios SET nome = %s WHERE idt_usuario = %s"
         self.cursor.execute(sql_update, (nome_update, id_update))
 
     def create_table_pontuacao(self):
@@ -60,7 +63,7 @@ class Usuario:
                 idt_pontos INT AUTO_INCREMENT PRIMARY KEY,
                 pontuacao INT DEFAULT 0,
                 FOREIGN KEY (idt_usuario) REFERENCES usuarios (idt_usuario)
-                )
+            )
         """)
 
     def insert_pontuacao(self, pontuacao, idt_usuario):
@@ -75,5 +78,4 @@ class Usuario:
             GROUP BY u.idt_usuario, u.nome
             ORDER BY soma_pontuacoes DESC
         """)
-        result = self.cursor.fetchall()
-        return result
+        return self.cursor.fetchall()

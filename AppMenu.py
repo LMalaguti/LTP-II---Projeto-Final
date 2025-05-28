@@ -82,7 +82,6 @@ class AppMenu:
 
         self.text_area_deletar = tk.Text(self.frame_deletar, height=10, width=40)
         self.text_area_deletar.pack(pady=5)
-        tk.Button(self.frame_deletar, text="Mostrar Usuários", command= self.atualizar_lista_usuarios_deletar).pack(pady=5)
         self.atualizar_lista_usuarios_deletar()
 
         tk.Button(self.frame_deletar, text="Deletar", command=self.deletar_usuario).pack(pady=5)
@@ -148,7 +147,6 @@ class AppMenu:
             except ValueError:
                 messagebox.showerror("Erro", "O ID deve ser um número.")
 
-
     def criar_tela_ranking(self):
         self.frame_ranking = tk.Frame(self.root)
         tk.Label(self.frame_ranking, text='Ranking de Usuários', font=('Arial', 14)).pack(pady=10)
@@ -156,7 +154,6 @@ class AppMenu:
         self.text_area_ranking = tk.Text(self.frame_ranking, height=12, width=45, state='disabled')
         self.text_area_ranking.pack(pady=5)
 
-        tk.Button(self.frame_ranking, text="Atualizar Ranking", command=self.atualizar_ranking).pack(pady=5)
         tk.Button(self.frame_ranking, text="Voltar ao Menu Principal", command=lambda: self.mostrar_tela(self.frame_menu)).pack(pady=5)
 
     def mostrar_tela_ranking(self):
@@ -164,6 +161,8 @@ class AppMenu:
         self.mostrar_tela(self.frame_ranking)
 
     def atualizar_ranking(self):
+        self.usuario.create_connection()
+        self.usuario.create_cursor()
         ranking = self.usuario.ranking()
         self.text_area_ranking.config(state='normal')
         self.text_area_ranking.delete('1.0', tk.END)

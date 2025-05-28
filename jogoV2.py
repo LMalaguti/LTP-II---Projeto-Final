@@ -11,6 +11,7 @@ spell = SpellChecker(language='pt')
 # Classe Jogo com callback para poder retornar ao menu
 class Jogo:
     def __init__(self, root, volta_menu=None):
+        self.conexao = Usuario()
         self.usuario = Usuario()
         self.root = root
         self.volta_menu = volta_menu
@@ -47,6 +48,7 @@ class Jogo:
         self.usuario.create_connection()
         self.usuario.create_cursor()
         self.usuario.insert_pontuacao(pontuacao, usuario_atual)
+        self.conexao.commit()
 
     # Desenhar peças
     def desenhar_pecas(self, canvas, texto):
