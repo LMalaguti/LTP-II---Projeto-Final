@@ -60,6 +60,7 @@ class Usuario:
                 idt_pontos INT AUTO_INCREMENT PRIMARY KEY,
                 pontuacao INT DEFAULT 0,
                 FOREIGN KEY (idt_usuario) REFERENCES usuarios (idt_usuario)
+                ON DELETE CASCADE
                 )
         """)
 
